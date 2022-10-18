@@ -3,6 +3,9 @@ from .basic import exists, makeDir
 
 
 def getCSVPath(nameOrPath: str):
+    """
+    获取CSV文件路径，默认从 ./data 路径下读取
+    """
     defaultRoot = "./data"
     nameOrPath = nameOrPath.replace(".csv", "")
     if "/" in nameOrPath:

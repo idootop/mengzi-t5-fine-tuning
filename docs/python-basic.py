@@ -2,8 +2,21 @@
 Python 学习笔记
 """
 
+from math import inf
+from typing import (
+    ClassVar,
+    Mapping,
+    Optional,
+    MutableMapping,
+    Any,
+    Union,
+    Callable,
+    overload,
+)
+
 # Assert
-assert x is None, "x不能为空"
+x = inf
+assert x is not None, "x不能为空"
 assert isinstance(x, str), "x不是字符串"
 
 # Types
