@@ -1,4 +1,6 @@
 build
 dist
-mengzi_zero_shot.egg-info
-*.whl
+*.egg-info
+__pycache__
+.mypy_cache
+.DS_Store

@@ -1,7 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
-name: Unit Tests
+name: Model Testing
 
 on:
   push:
@@ -31,10 +28,10 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: test model inference 
+    - name: Test model inference 
       run: |
-        python test.py
+        python tests/test.py
     
-    - name: evaluate
-      run: |
-        python evaluate/eval.py
+    # - name: Evaluate model
+    #   run: |
+    #     python evaluate/eval.py

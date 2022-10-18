@@ -1,0 +1,14 @@
+#!/usr/bin/env zx
+
+// Dev: pip install -e .
+// Prod: python setup.py install
+
+// Usage:
+// ./run print hello world
+// ./run test 
+// ./run test 
+
+const command = process.argv[3];
+const commands = process.argv.slice(4, process.argv.length);
+
+await $`zx scripts/${command}.mjs ${commands}`;

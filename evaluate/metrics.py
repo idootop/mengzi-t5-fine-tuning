@@ -9,7 +9,7 @@ def cal_acc(labels, preds):
 
 
 def cal_f1(labels, preds):
-    return f1_score(labels, preds, average='micro')
+    return f1_score(labels, preds, average="micro")
 
 
 def get_f1_score_label(pre_lines, gold_lines, label="organization"):
@@ -113,12 +113,12 @@ def rouge_n(peer, model, n):
     a given value of `n`.
     """
     peer_counter = _ngram_counts(peer, n)
-    '''
+    """
     for model in models:
         model_counter = _ngram_counts(model, n)
         matches += _counter_overlap(peer_counter, model_counter)
         recall_total += _ngram_count(model, n)
-    '''
+    """
     model_counter = _ngram_counts(model, n)
     matches = _counter_overlap(peer_counter, model_counter)
     recall_total = _ngram_count(model, n)
