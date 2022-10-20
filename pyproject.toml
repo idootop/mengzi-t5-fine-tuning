@@ -1,0 +1,34 @@
+[tool.mypy]
+
+python_version = 3.9
+
+[tool.pylint.BASIC]
+function-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+variable-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+const-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+class-attribute-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+class-const-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+inlinevar-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+method-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+attr-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+argument-rgx = "^[_]{0,2}[a-z][a-z0-9]*(([A-Z][a-zA-Z0-9]+)*[A-Z]?|([a-z0-9]+[A-Z])*|[A-Z])[_]{0,2}$"
+
+[tool.pylint.DESIGN]
+max-args = 5
+max-attributes = 8
+min-public-methods = 1
+
+[tool.pylint.FORMAT]
+max-line-length = 120
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = "missing-docstring, line-too-long, duplicate-code, relative-beyond-top-level"
+
+[tool.pylint.MISCELLANEOUS]
+notes = "FIXME,XXX,TODO"
+
+[tool.pylint.SIMILARITIES]
+ignore-comments = "yes"
+ignore-docstrings = "yes"
+ignore-imports = "yes"
+min-similarity-lines = 6

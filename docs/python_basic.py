@@ -2,6 +2,8 @@
 Python 学习笔记
 """
 
+# mypy: ignore-errors
+
 from math import inf
 from typing import (
     ClassVar,
@@ -11,8 +13,19 @@ from typing import (
     Any,
     Union,
     Callable,
-    overload,
 )
+
+# Async
+import asyncio
+
+
+async def main():
+    print("Hello ...")
+    await asyncio.sleep(1)
+    print("... World!")
+
+
+asyncio.run(main())
 
 # Assert
 x = inf
@@ -45,20 +58,8 @@ def addFloat(num1: int, num2: float = 1.0) -> float:
 
 
 addFloat(1, 2)
-addFloat(num2=1, num1=2.0)
+addFloat(num2=1.0, num1=2)
 x: Callable[[int, float], float] = addFloat  # Callable 👉 function
-
-# Async
-import asyncio
-
-
-async def main():
-    print("Hello ...")
-    await asyncio.sleep(1)
-    print("... World!")
-
-
-asyncio.run(main())
 
 # Class
 class MyClass:
@@ -78,14 +79,14 @@ class MyClass:
         print(f"{MyClass.prefix} World!")
 
     # class 实例方法
-    def test() -> None:
+    def test(self) -> None:
         MyClass.getPrefix()
 
 
 x: MyClass = MyClass()
 
 # 多态继承
-class people:
+class People:
     def __init__(self, name):
         self.name = name
 
@@ -93,11 +94,10 @@ class people:
         print(f"姓名：{self.name}")
 
 
-class student(people):
-    @overload
+class Student(People):
     def __init__(self, name, age=18):
         # 调用父类构造函数
-        people.__init__(self, name)
+        People.__init__(self, name)
         self.age: int = age
 
     # 覆写父类的方法

@@ -1,6 +1,6 @@
-from mengzi_fine_tuning.utils import readCSV, writeCSV
+from mengzi_fine_tuning.utils import read_csv, writeCSV
 
-datas = readCSV("test")
+datas = read_csv("test")
 print(datas)
 writeCSV(datas, "copy/itx")
 writeCSV(datas, "copy/it.csv")

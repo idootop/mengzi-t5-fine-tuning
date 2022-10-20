@@ -1,25 +1,13 @@
 import pandas as pd
 from .basic import exists, makeDir
-
-
-def getCSVPath(nameOrPath: str):
-    """
-    获取CSV文件路径，默认从 ./data 路径下读取
-    """
-    defaultRoot = "./data"
-    nameOrPath = nameOrPath.replace(".csv", "")
-    if "/" in nameOrPath:
-        path = f"{nameOrPath}.csv"
-    else:
-        path = f"{defaultRoot}/{nameOrPath}.csv"
-    return path
+from .io_tool import getFilePath
 
 
 def readCSV(nameOrPath: str, split=","):
     """
-    读取 CSV 数据列表
+    读取 CSV 数据列表 readCSV('example.csv')
     """
-    path = getCSVPath(nameOrPath)
+    path = getFilePath(nameOrPath)
     if exists(path):
         return pd.read_csv(path, sep=split)
 
@@ -28,7 +16,7 @@ def writeCSV(datas: pd.DataFrame, nameOrPath: str, split=","):
     """
     写入 CSV 数据列表
     """
-    path = getCSVPath(nameOrPath)
+    path = getFilePath(nameOrPath)
     makeDir(filePath=path)
     datas.to_csv(
         path,
