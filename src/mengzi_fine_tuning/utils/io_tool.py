@@ -39,44 +39,12 @@ def getFilePath(nameOrPath: str):
     splits = nameOrPath.split(".")
     suffix = splits[-1] if len(splits) > 1 else ""
     nameOrPath = nameOrPath.replace("\\", "/").replace(f".{suffix}", "")
+    suffix = f".{suffix}" if isNotEmpty(suffix) else ""
     isPath = (
         nameOrPath.startswith("/") or nameOrPath.startswith("./") or ":/" in nameOrPath
     )
     if isPath:
-        path = f"{nameOrPath}.{suffix}"
+        path = f"{nameOrPath}{suffix}"
     else:
-        path = f"{kDataRoot}/{nameOrPath}.{suffix}"
+        path = f"{kDataRoot}/{nameOrPath}{suffix}"
     return path
-
-
-def readString(nameOrPath: str):
-    path = getFilePath(nameOrPath)
-    with open(path, "r", encoding="utf-8") as f:
-        data = f.read()
-    return data
-
-
-def writeString(nameOrPath: str, text: str, append=False):
-    path = getFilePath(nameOrPath)
-    # 文件读写模式参考 https://stackoverflow.com/questions/1466000/difference-between-modes-a-a-w-w-and-r-in-built-in-open-function
-    mode = "a" if append else "w"
-    with open(path, mode, encoding="utf-8") as f:
-        f.write(text)
-
-
-def readLines(nameOrPath: str):
-    path = getFilePath(nameOrPath)
-    with open(path, "r", encoding="utf-8") as f:
-        data = f.readlines()
-    return data
-
-
-def writeLines(nameOrPath: str, lines: list[str], append=False):
-    path = getFilePath(nameOrPath)
-    mode = "a+" if append else "w"
-    with open(path, mode, encoding="utf-8") as f:
-        f.seek(0)  # 回到文件顶部
-        data = f.read(100)
-        if len(data) > 0:
-            f.write("\n")  # 如果文件内容非空，自动换行
-        f.writelines(f"{s}\n" for s in lines)

@@ -1,6 +1,8 @@
-from mengzi_fine_tuning.utils import read_csv, writeCSV
+from mengzi_fine_tuning.utils.csv_tool import readCSV, writeCSV
 
-datas = read_csv("test")
+kTestData = "./tests/data/csv"
+
+datas = readCSV(f"{kTestData}/test.csv", split="｜")
 print(datas)
-writeCSV(datas, "copy/itx")
-writeCSV(datas, "copy/it.csv")
+writeCSV(f"{kTestData}/test1", datas, split="｜")
+writeCSV(f"{kTestData}/test2.csv", datas, split="｜")

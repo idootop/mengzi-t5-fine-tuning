@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from .io_tool import readLines, readString, writeLines, writeString
+from .string_tool import readLines, readString, writeLines, writeString
 
 
 def jsonEncode(data: Any, pretty=True):
@@ -22,8 +22,8 @@ def writeJSON(nameOrPath: str, data):
 
 
 def readJSONs(nameOrPath: str) -> list[Any]:
-    return [jsonDecode(s) for s in readLines(nameOrPath)]
+    return [jsonDecode(line) for line in readLines(nameOrPath)]
 
 
 def writeJSONs(nameOrPath: str, datas: list[Any]):
-    writeLines(nameOrPath, [jsonEncode(data) for data in datas])
+    writeLines(nameOrPath, [jsonEncode(data, pretty=False) for data in datas])
