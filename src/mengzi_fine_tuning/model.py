@@ -64,14 +64,14 @@ class MengziZeroShot:
             encoding, batched=True, remove_columns=datasets["train"].column_names
         )
 
-    def saveOriginModel(self):
+    def saveModel(self):
         self.model.save_pretrained("./model/origin")
         self.tokenizer.save_pretrained("./model/origin")
 
     def train(self):
         tokenizedDatasets = self.__tokenizeDatasets(self.dataSubdir)
         dataCollator = default_data_collator
-        tarinerConfig = TrainingArguments(
+        trainerConfig = TrainingArguments(
             self.modelPath,
             evaluation_strategy="epoch",
             learning_rate=2e-5,
@@ -82,7 +82,7 @@ class MengziZeroShot:
         )
         trainer = Trainer(
             self.model,
-            tarinerConfig,
+            trainerConfig,
             train_dataset=tokenizedDatasets["train"],
             eval_dataset=tokenizedDatasets["validation"],
             data_collator=dataCollator,
@@ -91,7 +91,7 @@ class MengziZeroShot:
         trainer.train()
         trainer.save_model()
 
-    def inference(self, inputs: list[str]):
+    def inference(self, inputs: list[str], verbose=True):
         # 构造 prompt
         prompts = [self.promptBuilder(input) for input in inputs]
         # 编码
@@ -113,8 +113,9 @@ class MengziZeroShot:
             self.tokenizer.decode(output, skip_special_tokens=True)
             for output in outputs
         ]
-        for i, inputStr in enumerate(inputs):
-            print(f">>> 输入：\n{inputStr}\n")
-            # print(f"### Prompts：\n{prompts[i]}\n")
-            print(f"<<< 输出：\n{results[i]}\n")
+        if verbose:
+            for i, inputStr in enumerate(inputs):
+                print(f">>> 输入：\n{inputStr}\n")
+                # print(f"### Prompts：\n{prompts[i]}\n")
+                print(f"<<< 输出：\n{results[i]}\n")
         return results
