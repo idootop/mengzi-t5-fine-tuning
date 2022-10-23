@@ -6,7 +6,7 @@
 // Usage:
 // ./run print hello world
 // ./run test 
-// ./run test 
+// ./run test string
 
 const command = process.argv[3];
 const commands = process.argv.slice(4, process.argv.length);

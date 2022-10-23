@@ -1,24 +1,99 @@
-from transformers import T5Tokenizer, T5ForConditionalGeneration
+from transformers import (
+    T5Tokenizer,
+    T5ForConditionalGeneration,
+    TrainingArguments,
+    default_data_collator,
+    Trainer,
+)
 
+from .utils.dataset_tool import loadCSVDataset
+
+kBatchSize = 100
 kMaxLength = 512
-kModelName = "Langboat/mengzi-t5-base-mt"
 
 
 class MengziZeroShot:
-    def __init__(self):
+    @staticmethod
+    def __defaultPrompt(inputs: str):
+        return inputs
+
+    def __init__(
+        self,
+        modelName="Langboat/mengzi-t5-base-mt",
+        modelSubDir=None,
+        dataSubdir="default",
+        promptBuilder=None,
+    ):
+        self.dataSubdir = dataSubdir
+        self.promptBuilder = (
+            promptBuilder if promptBuilder else MengziZeroShot.__defaultPrompt
+        )
         # 加载模型
-        self.tokenizer = T5Tokenizer.from_pretrained(kModelName)
-        self.model = T5ForConditionalGeneration.from_pretrained(kModelName)
+        useLocal = bool(modelSubDir)
+        self.modelPath = f"./model/{modelSubDir}" if useLocal else modelName
+        self.tokenizer = T5Tokenizer.from_pretrained(
+            self.modelPath, local_files_only=useLocal
+        )
+        self.model = T5ForConditionalGeneration.from_pretrained(
+            self.modelPath, local_files_only=useLocal
+        )
 
-    def prompt(self, inputs: str):
-        return f"聊天内容：【{inputs.strip()}】\n题目：请总结聊天内容。答："
+    def __tokenizeDatasets(self, dataSubdir: str):
+        datasets = loadCSVDataset(dataSubdir)
 
-    def tokenDecode(self, s):
-        return self.tokenizer.decode(s, skip_special_tokens=True)
+        def encoding(data):
+            prompts = [self.promptBuilder(data) for data in data["inputs"]]
+            tokenizedInputs = self.tokenizer(
+                prompts,
+                padding=True,
+                truncation=True,
+                max_length=kMaxLength,
+                return_tensors="pt",
+            )
+            tokenizedOutputs = self.tokenizer(
+                text_target=[str(out) for out in data["outputs"]],
+                padding=True,
+                truncation=True,
+                max_length=kMaxLength,
+                return_tensors="pt",
+            )
+            tokenizedInputs["labels"] = tokenizedOutputs["input_ids"]
+            return tokenizedInputs
+
+        return datasets.map(
+            encoding, batched=True, remove_columns=datasets["train"].column_names
+        )
+
+    def saveOriginModel(self):
+        self.model.save_pretrained("./model/origin")
+        self.tokenizer.save_pretrained("./model/origin")
+
+    def train(self):
+        tokenizedDatasets = self.__tokenizeDatasets(self.dataSubdir)
+        dataCollator = default_data_collator
+        tarinerConfig = TrainingArguments(
+            self.modelPath,
+            evaluation_strategy="epoch",
+            learning_rate=2e-5,
+            per_device_train_batch_size=kBatchSize,
+            per_device_eval_batch_size=kBatchSize,
+            num_train_epochs=3,
+            weight_decay=0.01,
+        )
+        trainer = Trainer(
+            self.model,
+            tarinerConfig,
+            train_dataset=tokenizedDatasets["train"],
+            eval_dataset=tokenizedDatasets["validation"],
+            data_collator=dataCollator,
+            tokenizer=self.tokenizer,
+        )
+        trainer.train()
+        trainer.save_model()
 
     def inference(self, inputs: list[str]):
         # 构造 prompt
-        prompts = [self.prompt(input) for input in inputs]
+        prompts = [self.promptBuilder(input) for input in inputs]
         # 编码
         encodings = self.tokenizer(
             prompts,
@@ -30,7 +105,6 @@ class MengziZeroShot:
         # 推理
         outputs = self.model.generate(
             encodings["input_ids"],
-            attention_mask=encodings["attention_mask"],
             max_length=kMaxLength,
             num_beams=1,
         )
